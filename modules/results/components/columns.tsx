@@ -1,27 +1,32 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
+import { CellAction } from "@/modules/profile/components/cell-action";
+import { ColumnDef } from "@tanstack/react-table";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
-export type Payment = {
-  id: string
-  amount: number
-  status: "pending" | "processing" | "success" | "failed"
-  email: string
-}
+export type AttachCol = {
+  id: number;
+  name: string;
+  file: string;
+  status: number;
+};
 
-export const columns: ColumnDef<Payment>[] = [
+export const ResultsColumns: ColumnDef<AttachCol>[] = [
+  {
+    accessorKey: "name",
+    header: "Nombre",
+  },
+  {
+    accessorKey: "file",
+    header: "Archivo",
+  },
   {
     accessorKey: "status",
-    header: "Status",
+    header: "Estado",
   },
   {
-    accessorKey: "email",
-    header: "Email",
-  },
-  {
-    accessorKey: "amount",
-    header: "Amount",
-  },
-]
+    id: "actions",
+    cell: ({ row }) => <CellAction data={row.original} />,
+  }
+];
