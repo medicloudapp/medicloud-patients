@@ -2,7 +2,7 @@
 
 import { AttachCol } from "@/modules/results/components/columns";
 import { Button } from "@/components/ui/button";
-import { Edit, MoreHorizontal } from "lucide-react";
+import { Copy, Edit, MoreHorizontal } from "lucide-react";
 import {
   DropdownMenuItem,
   DropdownMenu,
@@ -25,11 +25,13 @@ export const CellAction = ({ data }: CellActionProps) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuLabel>
-            Actions
-        </DropdownMenuLabel>
+        <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuItem>
-          <Edit className="mr-2 h-4 w-4"/>
+          <Copy className="mr-2 h-4 w-4" />
+          Copy Link
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Edit className="mr-2 h-4 w-4" />
           Update
         </DropdownMenuItem>
       </DropdownMenuContent>

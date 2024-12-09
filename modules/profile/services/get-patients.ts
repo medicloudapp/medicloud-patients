@@ -1,8 +1,8 @@
 import { auth } from "@/auth";
 import axiosInstance from "@/lib/client";
-import type { Attach } from "@/modules/results/interfaces/Attach";
+import { Patient } from "@/modules/profile/interfaces/profile";
 
-export const getAttachmentsByPatientId = async (patientId: string) => {
+export const getPatientById = async (patientId: string) => {
   const session = await auth(); // Obtén la sesión en el servidor
 
   if (!session || !session.user || !session.user.token) {
@@ -14,11 +14,11 @@ export const getAttachmentsByPatientId = async (patientId: string) => {
       "Authorization"
     ] = `Bearer ${session.user.token}`;
     const { data } = await axiosInstance.get(
-      `/patient-annexes/only/patient/${patientId}`
+      `/patients/only/${patientId}`
     );
-    return data as Attach[];
+    return data as Patient;
   } catch (error) {
-    console.log("Error getting attachments", error);
+    console.log("Error getting patient", error);
     throw error;
   }
 };

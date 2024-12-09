@@ -6,21 +6,28 @@ import { UserLogin } from "@/modules/auth/services/auth";
 export default {
   providers: [
     Credentials({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        document: { label: "Document", type: "text" },
+      },
       authorize: async (credentials) => {
         const validatedFields = loginSchema.safeParse(credentials);
         if (!validatedFields.success) {
-          return null;
+          throw new Error("Invalid credentials");
         }
 
         const { email, document } = validatedFields.data;
 
+        // Llama a tu API de login
         const user = await UserLogin(email, document);
-        // Si coinciden, devolver el usuario
+
+        // Si hay un usuario válido, devuelve los datos necesarios
         if (user) {
           return user;
         }
 
-        // Si no coinciden, devolver null
+        // Si no, devuelve null
         return null;
       },
     }),

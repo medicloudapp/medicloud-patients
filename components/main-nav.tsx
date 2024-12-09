@@ -12,6 +12,16 @@ export function MainNav({ className }: React.HTMLAttributes<HTMLDivElement>) {
       label: "Perfil",
       active: pathName === "/profile",
     },
+    {
+      href: "results",
+      label: "Resultados",
+      active: pathName === "/results",
+    },
+    {
+      href: "scanner",
+      label: "Escaner",
+      active: pathName === "/scanner",
+    },
   ];
 
   return (
