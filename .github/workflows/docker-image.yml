@@ -51,16 +51,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Set up SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-
-      - name: Add SSH known hosts
-        run: |
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-
       - name: SSH to Local Machine and Deploy
         uses: garygrossgarten/github-action-ssh@release
         with:
@@ -69,12 +59,14 @@ jobs:
           privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           command: |
-            docker stop medicloud-patients-frontend || true
-            docker rm medicloud-patients-frontend || true
-
-            docker pull planetaip/medicloud-patients-frontend:latest || exit 1
-            docker images || exit 1
-
-            docker run --name medicloud-patients-frontend --env-file /home/administrador/.env -d -p 80:80 planetaip/medicloud-patients-frontend:latest || exit 1
-            docker ps || exit 1
-            docker logs medicloud-patients-frontend || exit 1
+            ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
+              docker stop medicloud-patients-frontend || true;
+              docker rm medicloud-patients-frontend || true;
+  
+              docker pull planetaip/medicloud-patients-frontend:latest || exit 1;
+              docker images || exit 1;
+  
+              docker run --name medicloud-patients-frontend --env-file /home/administrador/.env -d -p 80:80 planetaip/medicloud-patients-frontend:latest || exit 1;
+              docker ps || exit 1;
+              docker logs medicloud-patients-frontend || exit 1;
+            "
