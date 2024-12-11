@@ -52,13 +52,9 @@ jobs:
     needs: build
     steps:
       - name: SSH to Local Machine and Deploy using password
-        uses: appleboy/ssh-action@v0.1.0
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          port: 22
-          script: |
+        run: |
+          sudo apt-get install sshpass
+          sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 22 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
             docker stop medicloud-patients-frontend || true
             docker rm medicloud-patients-frontend || true
             docker pull planetaip/medicloud-patients-frontend:latest || exit 1
@@ -66,4 +62,4 @@ jobs:
             docker run --name medicloud-patients-frontend --env-file /home/administrador/.env -d -p 80:80 planetaip/medicloud-patients-frontend:latest || exit 1
             docker ps || exit 1
             docker logs medicloud-patients-frontend || exit 1
-
+          "
