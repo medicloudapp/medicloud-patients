@@ -25,7 +25,7 @@ export const {
       session.user.name = token.name as string;
       session.user.email = token.email as string;
       session.user.token = token.token as string;
-      
+
       console.log("Session Callback: Token", token);
       console.log("Session Callback: Session", session);
       return session;
@@ -39,5 +39,5 @@ export const {
   },
   ...authConfig,
   trustHost: true, // Agrega esta línea para confiar en el host automáticamente
-  secret: process.env.NEXTAUTH_SECRET
+  secret: process.env.NEXTAUTH_SECRET,
 });
