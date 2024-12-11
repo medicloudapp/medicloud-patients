@@ -52,21 +52,17 @@ jobs:
     needs: build
     steps:
       - name: SSH to Local Machine and Deploy
-        uses: garygrossgarten/github-action-ssh@release
+        uses: appleboy/ssh-action@v0.1.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          command: |
-            ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
-              docker stop medicloud-patients-frontend || true;
-              docker rm medicloud-patients-frontend || true;
-  
-              docker pull planetaip/medicloud-patients-frontend:latest || exit 1;
-              docker images || exit 1;
-  
-              docker run --name medicloud-patients-frontend --env-file /home/administrador/.env -d -p 80:80 planetaip/medicloud-patients-frontend:latest || exit 1;
-              docker ps || exit 1;
-              docker logs medicloud-patients-frontend || exit 1;
-            "
+          script: |
+            docker stop medicloud-patients-frontend || true
+            docker rm medicloud-patients-frontend || true
+            docker pull planetaip/medicloud-patients-frontend:latest || exit 1
+            docker images || exit 1
+            docker run --name medicloud-patients-frontend --env-file /home/administrador/.env -d -p 80:80 planetaip/medicloud-patients-frontend:latest || exit 1
+            docker ps || exit 1
+            docker logs medicloud-patients-frontend || exit 1
