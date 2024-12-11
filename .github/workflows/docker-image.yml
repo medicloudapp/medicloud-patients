@@ -51,12 +51,12 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: SSH to Local Machine and Deploy
+      - name: SSH to Local Machine and Deploy using password
         uses: appleboy/ssh-action@v0.1.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          password: ${{ secrets.SSH_PASSWORD }}
           port: 22
           script: |
             docker stop medicloud-patients-frontend || true
@@ -66,3 +66,4 @@ jobs:
             docker run --name medicloud-patients-frontend --env-file /home/administrador/.env -d -p 80:80 planetaip/medicloud-patients-frontend:latest || exit 1
             docker ps || exit 1
             docker logs medicloud-patients-frontend || exit 1
+
