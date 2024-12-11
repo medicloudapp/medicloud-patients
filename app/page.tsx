@@ -1,7 +1,9 @@
+"use client";
+
 import { Poppins } from "next/font/google";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { LoginButton } from "@/modules/auth/components/login-button";
+import { useRouter } from "next/navigation";
 
 const font = Poppins({
   subsets: ["latin"],
@@ -9,6 +11,7 @@ const font = Poppins({
 });
 
 export default function Home() {
+  const router = useRouter();
   return (
     <main
       className="flex h-screen flex-col items center justify-center bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))]
@@ -25,11 +28,14 @@ export default function Home() {
         </h1>
         <p> A simple authentication app</p>
         <div>
-          <LoginButton>
-            <Button variant="secondary" size="lg">
-              Login
-            </Button>
-          </LoginButton>
+          <Button
+            variant="secondary"
+            size="lg"
+            className="cursor-pointer"
+            onClick={() => router.push("/auth/login")}
+          >
+            Login
+          </Button>
         </div>
       </div>
     </main>
