@@ -53,7 +53,7 @@ jobs:
     steps:
       - name: SSH to Local Machine and Deploy using password
         run: |
-          sudo apt-get install sshpass
+          # Usamos sshpass si ya está disponible en el entorno
           sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh -o StrictHostKeyChecking=no -p 22 ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "
             docker stop medicloud-patients-frontend || true
             docker rm medicloud-patients-frontend || true
