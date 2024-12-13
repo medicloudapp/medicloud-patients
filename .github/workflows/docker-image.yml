@@ -51,21 +51,22 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Deploy using SSH
-        uses: garygrossgarten/github-action-ssh@release
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
-          privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          command: |
+      - name: Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+  
+      - name: Deploy via SSH
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -p 22 << 'EOF'
             docker stop medicloud-patients-frontend || true
             docker rm medicloud-patients-frontend || true
-
+  
             docker pull planetaip/medicloud-patients-frontend:latest || exit 1
             docker images || exit 1
-
-            docker run --name medicloud-patients-frontend --env-file /home/administrador/.env -d -p 80:80 planetaip/medicloud-patients-frontend:latest || exit 1
+  
+            docker run --name medicloud-patients-frontend --env-file /home/administrador/projects/medicloud-patients/.env -d -p 80:80 planetaip/medicloud-patients-frontend:latest || exit 1
             docker ps || exit 1
             docker logs medicloud-patients-frontend || exit 1
+          EOF
