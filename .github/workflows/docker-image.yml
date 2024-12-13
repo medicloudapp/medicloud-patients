@@ -51,14 +51,14 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: SSH to Local Machine and Deploy
-        uses: appleboy/ssh-action@v0.1.0
+      - name: Deploy using SSH
+        uses: garygrossgarten/github-action-ssh@release
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          script: |
+          command: |
             docker stop medicloud-patients-frontend || true
             docker rm medicloud-patients-frontend || true
 
