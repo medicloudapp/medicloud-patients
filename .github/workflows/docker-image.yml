@@ -66,6 +66,6 @@ jobs:
             docker pull planetaip/medicloud-patients-frontend:latest || exit 1
             docker images || exit 1
 
-            docker run --name medicloud-patients-frontend --env-file /home/administrador/.env -d -p 80:80 planetaip/medicloud-patients-frontend:latest || exit 1
+            docker run --name medicloud-patients-frontend --env-file /home/administrador/projects/medicloud-patients/.env -d -p 3030:3000 planetaip/medicloud-patients-frontend:latest || exit 1
             docker ps || exit 1
             docker logs medicloud-patients-frontend || exit 1
