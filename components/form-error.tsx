@@ -4,6 +4,8 @@ interface FormErrorProps {
     message?: string;
 }
 
+// a comment to show changes on server
+
 export const FormError = ({ message }: FormErrorProps) => {
     if (!message)  return null;
 
