@@ -12,12 +12,12 @@ export const login = async (values: z.infer<typeof loginSchema>) => {
     return { error: "Invalid fields" };
   }
 
-  const { email, document } = validatedFields.data;
+  const { document, password } = validatedFields.data;
 
   try {
     await signIn("credentials", {
-      email,
       document,
+      password,
       redirectTo: DEFAULT_LOGIN_REDIRECT,
     });
     return { success: "Login successful" };

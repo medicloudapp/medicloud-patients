@@ -1,6 +1,6 @@
 "use client";
 
-import { CellAction } from "@/modules/results/components/cell-action";
+// import { CellAction } from "@/modules/results/components/cell-action";
 import { ColumnDef } from "@tanstack/react-table";
 import clsx from "clsx"; // Instálalo si no está presente: npm install clsx
 import { Checkbox } from "@/components/ui/checkbox";
@@ -59,8 +59,8 @@ export const ResultsColumns: ColumnDef<AttachCol>[] = [
       );
     },
   },
-  {
-    id: "actions",
-    cell: ({ row }) => <CellAction data={row.original} />,
-  },
+  // {
+  //   id: "actions",
+  //   cell: ({ row }) => <CellAction data={row.original} />,
+  // },
 ];

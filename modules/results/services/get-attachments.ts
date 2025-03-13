@@ -14,7 +14,7 @@ export const getAttachmentsByPatientId = async (patientId: string) => {
       "Authorization"
     ] = `Bearer ${session.user.token}`;
     const { data } = await axiosInstance.get(
-      `/patient-annexes/only/patient/${patientId}`
+      `/patient-annexes/patient/${patientId}`
     );
     return data as Attach[];
   } catch (error) {

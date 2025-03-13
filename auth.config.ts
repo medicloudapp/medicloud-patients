@@ -8,8 +8,8 @@ export default {
     Credentials({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
         document: { label: "Document", type: "text" },
+        password: { label: "Password", type: "password"}
       },
       authorize: async (credentials) => {
         const validatedFields = loginSchema.safeParse(credentials);
@@ -17,10 +17,10 @@ export default {
           throw new Error("Invalid credentials");
         }
 
-        const { email, document } = validatedFields.data;
+        const {  document, password } = validatedFields.data;
 
         // Llama a tu API de login
-        const user = await UserLogin(email, document);
+        const user = await UserLogin( document, password);
 
         // Si hay un usuario válido, devuelve los datos necesarios
         if (user) {

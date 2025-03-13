@@ -1,4 +1,4 @@
-import { ResultsForm } from "@/modules/results/components/results-form";
+import {  ResultsForm } from "@/modules/results/components/results-form";
 
 const ResultsPage = async () => {
   return (

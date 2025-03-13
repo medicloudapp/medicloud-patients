@@ -28,8 +28,8 @@ export const LoginForm = () => {
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "",
       document: "",
+      password: "",
     },
   });
 
@@ -46,8 +46,8 @@ export const LoginForm = () => {
 
   return (
     <CardWrapper
-      headerLabel="Welcome back!"
-      backButtonLabel="Don't have an account?"
+      headerLabel="Bienvenido de nuevo!"
+      backButtonLabel="No tienes una cuenta?"
       backButtonHref="/auth/register"
     >
       <Form {...form}>
@@ -55,16 +55,16 @@ export const LoginForm = () => {
           <div className="space-y-4">
             <FormField
               control={form.control}
-              name="email"
+              name="document"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold">Email</FormLabel>
+                  <FormLabel className="font-semibold">Documento</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       disabled={isPending}
-                      placeholder="john.doe@example.com"
-                      type="email"
+                      placeholder="1234567890"
+                      type="text"
                     />
                   </FormControl>
                   <FormMessage />
@@ -73,15 +73,16 @@ export const LoginForm = () => {
             />
             <FormField
               control={form.control}
-              name="document"
+              name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold">Document</FormLabel>
+                  <FormLabel className="font-semibold">Contraseña:</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       disabled={isPending}
-                      placeholder="1234567890"
+                      placeholder="*********"
+                      type="password"
                     />
                   </FormControl>
                   <FormMessage />
@@ -92,7 +93,7 @@ export const LoginForm = () => {
           <FormError message={error} />
           <FormSuccess message={success} />
           <Button type="submit" className="w-full" disabled={isPending}>
-            Login
+            Iniciar Sesión
           </Button>
         </form>
       </Form>

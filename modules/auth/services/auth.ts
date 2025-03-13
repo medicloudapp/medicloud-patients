@@ -5,9 +5,9 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
-export const UserLogin = async (email: string, document: string) => {
+export const UserLogin = async (document: string, password: string) => {
   try {
-    const response = await api.post("/auth/patients", { email, document });
+    const response = await api.post("/auth/patients", { document, password });
     return response.data;
   } catch (error) {
     console.error("Error en UserLogin:", error);
