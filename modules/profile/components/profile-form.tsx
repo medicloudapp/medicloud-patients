@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import { Heading } from "@/components/ui/heading";
-import { Separator } from "@/components/ui/separator";
 import { ProfileCard } from "@/modules/profile/components/profile-card";
 
 export const ProfileForm = async () => {
@@ -13,7 +12,6 @@ export const ProfileForm = async () => {
           description={`Bienvenido, ${session?.user?.name}!!`}
         />
       </div>
-      <Separator />
       <ProfileCard patientId={session?.user?.id as string} />
     </>
   );
