@@ -5,7 +5,9 @@ import { ResultsTable } from "@/modules/results/components/results-table";
 
 export const ResultsForm = async () => {
   const session = await auth();
-  const initialData = await getAttachmentsByPatientId(session?.user?.id as string);
+  const initialData = await getAttachmentsByPatientId(
+    session?.user?.id as string
+  );
 
   return (
     <>
@@ -15,7 +17,10 @@ export const ResultsForm = async () => {
           description={`Bienvenido, ${session?.user?.name}!!`}
         />
       </div>
-      <ResultsTable initialData={initialData} />
+      <ResultsTable
+        initialData={initialData}
+        token={session?.user?.token as string}
+      />
     </>
   );
 };

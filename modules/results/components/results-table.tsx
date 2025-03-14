@@ -8,9 +8,13 @@ import { Attach } from "@/modules/results/interfaces/Attach";
 
 interface ResultsTableProps {
   initialData: Attach[];
+  token?: string;
 }
 
-export const ResultsTable = ({ initialData }: ResultsTableProps) => {
+export const ResultsTable: React.FC<ResultsTableProps> = ({
+  initialData,
+  token,
+}) => {
   const { setResults, results } = useResultStore();
 
   useEffect(() => {
@@ -22,7 +26,12 @@ export const ResultsTable = ({ initialData }: ResultsTableProps) => {
 
   return (
     <>
-      <DataTable searchKey="name" columns={ResultsColumns} data={results} />
+      <DataTable
+        searchKey="name"
+        columns={ResultsColumns}
+        data={results}
+        token={token}
+      />
     </>
   );
 };

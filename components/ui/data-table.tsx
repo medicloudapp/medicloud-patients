@@ -23,18 +23,21 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import { DownloadIcon } from "lucide-react";
-import { downloadFile } from "@/lib/utils";
+import { downloadFile, SendFile } from "@/lib/utils";
+import { SendIcon } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   searchKey: string;
+  token?: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   searchKey,
+  token,
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = useState({});
@@ -63,7 +66,7 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
-        <div className="">
+        <div className="flex gap-2">
           <Button
             onClick={() =>
               downloadFile(
@@ -71,9 +74,24 @@ export function DataTable<TData, TValue>({
                 table.getFilteredSelectedRowModel().rows.map((r) => r.original)
               )
             }
+            variant="secondary"
+            className="bg-blue-100 hover:bg-blue-200 text-blue-700"
           >
-            <DownloadIcon />
+            <DownloadIcon className="mr-2 h-4 w-4" />
             Descargar
+          </Button>
+          <Button
+            onClick={() =>
+              SendFile(
+                table.getFilteredSelectedRowModel().rows.map((r) => r.original),
+                token || ""
+              )
+            }
+            variant="default"
+            className="bg-green-600 hover:bg-green-700"
+          >
+            <SendIcon className="mr-2 h-4 w-4" />
+            Enviar al correo
           </Button>
         </div>
       </div>

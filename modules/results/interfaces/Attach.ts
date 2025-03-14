@@ -5,3 +5,8 @@ export interface Attach {
   patientId: number;
   status: number;
 }
+
+export interface FileProcessRequest {
+  patientId: number;
+  fileLink: string;
+}

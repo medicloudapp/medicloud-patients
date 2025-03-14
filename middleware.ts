@@ -1,21 +1,15 @@
 import NextAuth from "next-auth";
-import authConfig from "@/auth.config"; // Ruta correcta
-import {
-  DEFAULT_LOGIN_REDIRECT,
-  publicRoutes,
-  authRoutes,
-  apiAuthPrefix,
-} from "@/routes";
+import authConfig from "@/auth.config";
 
-// Configuración de NextAuth con middleware
 const { auth } = NextAuth(authConfig);
 
-export default auth((req, ctx) => {
+import { DEFAULT_LOGIN_REDIRECT, authRoutes, apiAuthPrefix } from "@/routes";
+
+export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth; // Verifica si el usuario está autenticado
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-  const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
 
   // Permitir acceso a las rutas de API de autenticación
@@ -23,7 +17,7 @@ export default auth((req, ctx) => {
     return;
   }
 
-  // Redirigir al dashboard si el usuario ya está autenticado y accede a una ruta de autenticación
+  // Redirigir al protected si el usuario ya está autenticado y accede a una ruta de autenticación
   if (isAuthRoute) {
     if (isLoggedIn) {
       return Response.redirect(new URL(DEFAULT_LOGIN_REDIRECT, nextUrl));
@@ -31,8 +25,8 @@ export default auth((req, ctx) => {
     return;
   }
 
-  // Redirigir al login si no está autenticado y no es una ruta pública
-  if (!isLoggedIn && !isPublicRoute) {
+  // Redirigir al login si no está autenticado y no es una ruta de autenticación
+  if (!isLoggedIn && !isAuthRoute) {
     return Response.redirect(new URL("/auth/login", nextUrl));
   }
 
