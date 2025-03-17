@@ -8,9 +8,18 @@ import { DEFAULT_LOGIN_REDIRECT, authRoutes, apiAuthPrefix } from "@/routes";
 export default auth((req) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth; // Verifica si el usuario está autenticado
+  const { pathname } = req.nextUrl;
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
-  const isAuthRoute = authRoutes.includes(nextUrl.pathname);
+  // Verificar si la ruta actual está en authRoutes
+  const isAuthRoute = authRoutes.some((route) => {
+    if (route.includes(":")) {
+      // Manejar rutas dinámicas
+      const routePattern = new RegExp(`^${route.replace(/:.*\*/, ".*")}$`);
+      return routePattern.test(pathname);
+    }
+    return pathname === route;
+  });
 
   // Permitir acceso a las rutas de API de autenticación
   if (isApiAuthRoute) {
