@@ -32,6 +32,7 @@ export const {
     signIn: "/auth/login",
   },
   ...authConfig,
-  trustHost: true, // Agrega esta línea para confiar en el host automáticamente
-  secret: process.env.NEXTAUTH_SECRET
+  secret: process.env.NEXTAUTH_SECRET,
+  trustHost: true,
+  debug: true,
 });
