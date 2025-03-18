@@ -24,29 +24,27 @@ jobs:
           minor_pattern: "feat:"
           format: "${major}.${minor}.${patch}-prerelease${increment}"
 
-      - name: Print Version
-        run: |
-          echo "NEW_VERSION: ${{ steps.version.outputs.version }}"
-
       - name: Log in to Docker Hub
         env: 
           DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
         run: |
-          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+          echo "Iniciando login"
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+          echo "Fin del login!!!"
 
       - name: Build Docker Image
         env:
           NEW_VERSION: ${{ steps.version.outputs.version }}
         run: |
-          docker build -t planetaip/medicloud-patients-frontend:$NEW_VERSION .
+          docker build -t planetaip/medicloud-patients-frontend:${{ env.NEW_VERSION }} .
           docker build -t planetaip/medicloud-patients-frontend:latest .
 
       - name: Push Docker Image
         env:
           NEW_VERSION: ${{ steps.version.outputs.version }}
         run: |
-          docker push planetaip/medicloud-patients-frontend:$NEW_VERSION
+          docker push planetaip/medicloud-patients-frontend:${{ env.NEW_VERSION }}
           docker push planetaip/medicloud-patients-frontend:latest
           
   deploy:
@@ -62,21 +60,12 @@ jobs:
           privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 293
           command: |
-            echo "Deteniendo y eliminando el contenedor existente..."
             docker stop medicloud-patients-frontend || true
             docker rm medicloud-patients-frontend || true
 
-            echo "Descargando la última imagen..."
             docker pull planetaip/medicloud-patients-frontend:latest || exit 1
-
-            echo "Listando imágenes..."
             docker images || exit 1
 
-            echo "Iniciando el nuevo contenedor..."
             docker run --name medicloud-patients-frontend --env-file /home/administrador/projects/medicloud-patients/.env -d -p 3030:3000 planetaip/medicloud-patients-frontend:latest || exit 1
-
-            echo "Verificando contenedores en ejecución..."
             docker ps || exit 1
-
-            echo "Mostrando logs del contenedor..."
             docker logs medicloud-patients-frontend || exit 1
