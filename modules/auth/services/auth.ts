@@ -1,16 +1,35 @@
 import axios from "axios";
+import https from 'https';
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  headers: { "Content-Type": "application/json" },
+  headers: { 
+    "Content-Type": "application/json",
+    "Accept": "application/json"
+  },
+  timeout: 15000, // 15 seconds timeout
+  httpsAgent: new https.Agent({
+    rejectUnauthorized: process.env.NODE_ENV === 'development' ? false : true,
+    secureProtocol: 'TLSv1_2_method'
+  })
 });
 
 export const UserLogin = async (document: string, password: string) => {
   try {
-    const response = await api.post("/auth/patients", { document, password });
+    const response = await api.post("/auth/patients", { 
+      document, 
+      password 
+    });
     return response.data;
   } catch (error) {
-    console.error("Error en UserLogin:", error);
+    if (axios.isAxiosError(error)) {
+      console.error("Error en UserLogin:", {
+        status: error.response?.status,
+        data: error.response?.data,
+        url: error.config?.url,
+        message: error.message
+      });
+    }
     return null;
   }
 };
@@ -27,11 +46,17 @@ export const signUp = async (
       password,
     };
 
-    // Envía el objeto userData al endpoint
     const response = await api.put("/patients/create-password", userData);
     return response.data;
   } catch (error) {
-    console.error("Error en register:", error);
+    if (axios.isAxiosError(error)) {
+      console.error("Error en register:", {
+        status: error.response?.status,
+        data: error.response?.data,
+        url: error.config?.url,
+        message: error.message
+      });
+    }
     return null;
   }
 };
@@ -43,7 +68,14 @@ export const checkEmail = async (code: string, patientId: string) => {
     );
     return response.data;
   } catch (error) {
-    console.error("Error en verificacion:", error);
+    if (axios.isAxiosError(error)) {
+      console.error("Error en verificacion:", {
+        status: error.response?.status,
+        data: error.response?.data,
+        url: error.config?.url,
+        message: error.message
+      });
+    }
     return null;
   }
 };
