@@ -7,10 +7,11 @@ const api = axios.create({
     "Content-Type": "application/json",
     "Accept": "application/json"
   },
-  timeout: 15000,
+  timeout: 30000, // Increased timeout for Docker environment
   httpsAgent: new https.Agent({
-    rejectUnauthorized: process.env.NODE_ENV !== 'production', // Allow self-signed certs only in non-production
-    minVersion: 'TLSv1.2'
+    rejectUnauthorized: false, // Required for Docker container communication
+    minVersion: 'TLSv1.2',
+    keepAlive: true
   })
 });
 
