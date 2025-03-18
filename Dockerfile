@@ -12,7 +12,7 @@ WORKDIR /app
 
 # Install necessary certificates and security packages
 RUN apk update && \
-    apk add --no-cache ca-certificates openssl && \
+    apk add --no-cache ca-certificates openssl tini && \
     update-ca-certificates
 
 COPY --from=builder /app/package.json /app/package-lock.json ./
@@ -27,4 +27,5 @@ ENV NODE_TLS_REJECT_UNAUTHORIZED=0
 ENV SSL_CERT_DIR=/etc/ssl/certs
 
 EXPOSE 3000
+ENTRYPOINT ["/sbin/tini", "--"]
 CMD ["npm", "start"]
