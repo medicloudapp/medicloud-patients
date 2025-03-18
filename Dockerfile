@@ -10,8 +10,10 @@ RUN npm run build
 FROM node:18-alpine
 WORKDIR /app
 
-# Install certificates
-RUN apk add --no-cache ca-certificates
+# Install necessary certificates and security packages
+RUN apk update && \
+    apk add --no-cache ca-certificates openssl && \
+    update-ca-certificates
 
 COPY --from=builder /app/package.json /app/package-lock.json ./
 COPY --from=builder /app/.next ./.next
@@ -20,8 +22,9 @@ COPY --from=builder /app/node_modules ./node_modules
 
 # Set environment variables
 ENV NODE_ENV=production
-ENV NEXT_PUBLIC_API_URL=http://medicloud.co/api
+ENV NEXT_PUBLIC_API_URL=https://medicloud.co/api
 ENV NODE_TLS_REJECT_UNAUTHORIZED=0
+ENV SSL_CERT_DIR=/etc/ssl/certs
 
 EXPOSE 3000
 CMD ["npm", "start"]
