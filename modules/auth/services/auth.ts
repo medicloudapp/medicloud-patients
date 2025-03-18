@@ -7,11 +7,17 @@ const api = axios.create({
     "Content-Type": "application/json",
     "Accept": "application/json"
   },
-  timeout: 15000, // 15 seconds timeout
+  timeout: 15000,
   httpsAgent: new https.Agent({
-    rejectUnauthorized: process.env.NODE_ENV === 'development' ? false : true,
-    secureProtocol: 'TLSv1_2_method'
+    rejectUnauthorized: false, // Required for self-signed certificates
+    minVersion: 'TLSv1.2'
   })
+});
+
+// Add request interceptor for logging
+api.interceptors.request.use((config) => {
+  console.log(`[API Request] ${config.method?.toUpperCase()} ${config.url}`);
+  return config;
 });
 
 export const UserLogin = async (document: string, password: string) => {
@@ -20,14 +26,16 @@ export const UserLogin = async (document: string, password: string) => {
       document, 
       password 
     });
+    console.log('[Login Success]', { status: response.status });
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
-      console.error("Error en UserLogin:", {
+      console.error("[Login Error]", {
         status: error.response?.status,
         data: error.response?.data,
         url: error.config?.url,
-        message: error.message
+        message: error.message,
+        code: error.code
       });
     }
     return null;
