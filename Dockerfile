@@ -16,7 +16,7 @@ COPY --from=builder /app/node_modules ./node_modules
 
 # Set environment variables (override these at runtime if needed)
 ENV NODE_ENV=production
-ENV NEXT_PUBLIC_API_URL=http://localhost:3000
+ENV NEXT_PUBLIC_API_URL=http://medicloud.co/api
 
 EXPOSE 3000
 CMD ["npm", "start"]
