@@ -1,0 +1,71 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with: 
+          fetch-depth: 0
+
+      - name: Git Semantic Version
+        id: version
+        uses: PaulHatch/semantic-version@v4.0.3
+        with:
+          major_pattern: "major:"
+          minor_pattern: "feat:"
+          format: "${major}.${minor}.${patch}-prerelease${increment}"
+
+      - name: Log in to Docker Hub
+        env: 
+          DOCKER_USER: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+        run: |
+          echo "Iniciando login"
+          docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+          echo "Fin del login!!!"
+
+      - name: Build Docker Image
+        env:
+          NEW_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          docker build -t planetaip/medicloud-patients-frontend:${{ env.NEW_VERSION }} .
+          docker build -t planetaip/medicloud-patients-frontend:latest .
+
+      - name: Push Docker Image
+        env:
+          NEW_VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          docker push planetaip/medicloud-patients-frontend:${{ env.NEW_VERSION }}
+          docker push planetaip/medicloud-patients-frontend:latest
+          
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy using SSH
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          privateKey: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 293
+          command: |
+            docker stop medicloud-patients-frontend || true
+            docker rm medicloud-patients-frontend || true
+
+            docker pull planetaip/medicloud-patients-frontend:latest || exit 1
+            docker images || exit 1
+
+            docker run --name medicloud-patients-frontend --env-file /home/administrador/projects/medicloud-patients/.env -d -p 3030:3000 planetaip/medicloud-patients-frontend:latest || exit 1
+            docker ps || exit 1
+            docker logs medicloud-patients-frontend || exit 1
