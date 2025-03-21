@@ -34,5 +34,4 @@ export const {
   ...authConfig,
   secret: process.env.NEXTAUTH_SECRET,
   trustHost: true,
-  debug: true,
 });
