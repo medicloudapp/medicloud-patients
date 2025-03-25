@@ -1,11 +1,9 @@
-import { Button } from "@/components/ui/button";
 import {
   Card,
   CardHeader,
   CardContent,
   CardTitle,
   CardDescription,
-  CardFooter,
 } from "@/components/ui/card";
 import { getPatientById } from "@/modules/profile/services/get-patients";
 import { Patient } from "@/modules/profile/interfaces/profile";
@@ -82,9 +80,9 @@ export const ProfileCard = async ({ patientId }: ProfileCardProps) => {
           </div>
         </div>
       </CardContent>
-      <CardFooter className=" bg-gray-50/50 flex justify-end gap-2 mt-6">
+      {/* <CardFooter className=" bg-gray-50/50 flex justify-end gap-2 mt-6">
         <Button className="bg-blue-600 hover:bg-blue-700">Edit Profile</Button>
-      </CardFooter>
+      </CardFooter> */}
     </Card>
   );
 };

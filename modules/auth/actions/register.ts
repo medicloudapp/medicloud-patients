@@ -9,8 +9,8 @@ export const createAccount = async (values: z.infer<typeof registerSchema>) => {
 
   // Si la validación falla, retornar un error
   if (!validatedFields.success) {
-    console.error("Validation error:", validatedFields.error);
-    return { error: "Invalid fields", details: validatedFields.error.errors };
+    console.error("Error de validación:", validatedFields.error);
+    return { error: "Los datos ingresados no son válidos", details: validatedFields.error.errors };
   }
 
   // Extraer los datos validados
@@ -22,33 +22,31 @@ export const createAccount = async (values: z.infer<typeof registerSchema>) => {
     console.log({ response });
     // Si no hay respuesta, retornar un error
     if (!response) {
-      console.error("No response received from signUp");
-      return { error: "Error creating account" };
+      console.error("No se recibió respuesta del servidor");
+      return { error: "Error al crear la cuenta. Por favor, intente nuevamente" };
     }
 
-    // Registrar en consola la respuesta del servidor
-    console.log("Response from signUp:", response);
+    console.log("Respuesta del servidor:", response);
 
-    // Verificar si la respuesta tiene la estructura esperada
     if (!response.id) {
-      console.error("Invalid response structure:", response);
-      return { error: "Invalid response from server" };
+      console.error("Estructura de respuesta inválida:", response);
+      return { error: "Error en la respuesta del servidor. Por favor, intente más tarde" };
     }
 
     // Retornar éxito con el ID y la respuesta completa
     return {
-      success: "Account created successfully",
+      success: "Cuenta creada exitosamente",
       id: response.id,
-      data: response, // Retornar la respuesta completa
+      data: response,
     };
   } catch (error) {
     // Capturar y registrar errores
-    console.error("Registration error:", error);
+    console.error("Error en el registro:", error);
 
     // Retornar un mensaje de error genérico con detalles
     return {
-      error: "Something went wrong during registration",
-      details: error instanceof Error ? error.message : "Unknown error",
+      error: "Ha ocurrido un error durante el registro. Por favor, intente nuevamente",
+      details: error instanceof Error ? error.message : "Error desconocido",
     };
   }
 };
@@ -59,8 +57,8 @@ export const verifyEmail = async (values: z.infer<typeof verifySchema>) => {
 
   // Si la validación falla, retornar un error
   if (!validatedFields.success) {
-    console.error("Validation error:", validatedFields.error);
-    return { error: "Invalid fields", details: validatedFields.error.errors };
+    console.error("Error de validación:", validatedFields.error);
+    return { error: "Código de verificación inválido", details: validatedFields.error.errors };
   }
 
   // Extraer los datos validados
@@ -72,26 +70,25 @@ export const verifyEmail = async (values: z.infer<typeof verifySchema>) => {
 
     // Si no hay respuesta, retornar un error
     if (!response) {
-      console.error("No response received from signUp");
-      return { error: "Error verifying email code" };
+      console.error("No se recibió respuesta del servidor");
+      return { error: "Error al verificar el código de correo electrónico" };
     }
 
-    // Registrar en consola la respuesta del servidor
-    console.log("Response from signUp:", response);
+    console.log("Respuesta del servidor:", response);
 
     // Retornar éxito con el ID y la respuesta completa
     return {
-      success: "Email verification completed successfully",
+      success: "Correo electrónico verificado exitosamente",
       data: response,
     };
   } catch (error) {
     // Capturar y registrar errores
-    console.error("Verification error:", error);
+    console.error("Error en la verificación:", error);
 
     // Retornar un mensaje de error genérico con detalles
     return {
-      error: "Something went wrong during Verification",
-      details: error instanceof Error ? error.message : "Unknown error",
+      error: "Ha ocurrido un error durante la verificación. Por favor, intente nuevamente",
+      details: error instanceof Error ? error.message : "Error desconocido",
     };
   }
 };
