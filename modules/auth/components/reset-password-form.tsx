@@ -20,11 +20,13 @@ import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { useState, useTransition } from "react";
 import { resetPassword } from "@/modules/auth/actions/reset-password";
+import { useRouter } from "next/navigation";
 
 export const ResetPasswordForm = () => {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof resetPasswordSchema>>({
     resolver: zodResolver(resetPasswordSchema),
@@ -41,7 +43,17 @@ export const ResetPasswordForm = () => {
     startTransition(() => {
       resetPassword(values).then((data) => {
         setError(data.error);
-        setSuccess(data.success);
+        if (data.success) {
+          setSuccess(data.success);
+          console.log({ data });
+
+          // Verificar si la respuesta tiene un ID y redirigir
+          if (data.id) {
+            router.push(`/auth/register/${data.id}`);
+          } else {
+            setError("No se pudo obtener el ID del paciente");
+          }
+        }
       });
     });
   };
