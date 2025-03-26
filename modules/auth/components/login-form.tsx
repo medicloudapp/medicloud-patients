@@ -46,13 +46,11 @@ export const LoginForm = () => {
 
         if (data.success) {
           setSuccess(data.success);
-          // Optional: Reset form after successful login
           form.reset();
           return;
         }
 
-        // If no success or error message, set a generic error
-        setError("Ocurrió un error inesperado. Por favor, intente nuevamente.");
+        setError("Error inesperado durante el inicio de sesión");
       });
     });
   };

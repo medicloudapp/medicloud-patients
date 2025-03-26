@@ -14,20 +14,21 @@ export default {
       authorize: async (credentials) => {
         const validatedFields = loginSchema.safeParse(credentials);
         if (!validatedFields.success) {
-          throw new Error("Invalid credentials");
+          throw new Error("Credenciales inválidas");
         }
 
-        const {  document, password } = validatedFields.data;
+        const { document, password } = validatedFields.data;
 
-        // Llama a tu API de login
-        const user = await UserLogin( document, password);
+        const response = await UserLogin(document, password);
 
-        // Si hay un usuario válido, devuelve los datos necesarios
-        if (user) {
-          return user;
+        if (!response.success) {
+          throw new Error(response.message);
         }
 
-        // Si no, devuelve null
+        if (response.data) {
+          return response.data;
+        }
+
         return null;
       },
     }),
