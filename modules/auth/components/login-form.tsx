@@ -38,33 +38,22 @@ export const LoginForm = () => {
     setError("");
     setSuccess("");
     startTransition(() => {
-      login(values)
-        .then((data) => {
-          if (data.error) {
-            setError(data.error);
-            return;
-          }
-          
-          if (data.success) {
-            setSuccess(data.success);
-            // Optional: Reset form after successful login
-            form.reset();
-            return;
-          }
+      login(values).then((data) => {
+        if (data.error) {
+          setError(data.error);
+          return;
+        }
 
-          // If no success or error message, set a generic error
-          setError("Ocurrió un error inesperado. Por favor, intente nuevamente.");
-        })
-        .catch((error) => {
-          console.error("Login error:", error);
-          setError("Error de conexión. Por favor, verifique su conexión a internet.");
-        })
-        .finally(() => {
-          if (isPending) {
-            // Reset loading state if stuck
-            startTransition(() => {});
-          }
-        });
+        if (data.success) {
+          setSuccess(data.success);
+          // Optional: Reset form after successful login
+          form.reset();
+          return;
+        }
+
+        // If no success or error message, set a generic error
+        setError("Ocurrió un error inesperado. Por favor, intente nuevamente.");
+      });
     });
   };
 
