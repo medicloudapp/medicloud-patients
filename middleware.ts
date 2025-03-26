@@ -7,8 +7,8 @@ import { DEFAULT_LOGIN_REDIRECT, authRoutes, apiAuthPrefix } from "@/routes";
 
 export default auth((req) => {
   const { nextUrl } = req;
-  const isLoggedIn = !!req.auth; // Verifica si el usuario está autenticado
   const { pathname } = req.nextUrl;
+  const isLoggedIn = !!req.auth; // Verifica si el usuario está autenticado
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   // Verificar si la ruta actual está en authRoutes

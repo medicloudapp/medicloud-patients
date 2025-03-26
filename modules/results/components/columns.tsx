@@ -2,14 +2,14 @@
 
 // import { CellAction } from "@/modules/results/components/cell-action";
 import { ColumnDef } from "@tanstack/react-table";
-import clsx from "clsx"; // Instálalo si no está presente: npm install clsx
 import { Checkbox } from "@/components/ui/checkbox";
 
 // Define el tipo de los datos
 export type AttachCol = {
   id: number;
   name: string;
-  status: number;
+  date: string;
+  service: string;
 };
 
 export const ResultsColumns: ColumnDef<AttachCol>[] = [
@@ -40,27 +40,11 @@ export const ResultsColumns: ColumnDef<AttachCol>[] = [
     header: "Nombre",
   },
   {
-    accessorKey: "status",
-    header: "Estado",
-    cell: ({ row }) => {
-      const status = row.getValue<number>("status"); // Obtiene el valor del estado
-      const isActive = status === 1; // Define si está activo
-      const statusText = isActive ? "Activo" : "Inactivo"; // Define el texto a mostrar
-
-      return (
-        <span
-          className={clsx(
-            "font-medium",
-            isActive ? "text-black font-bold" : "text-red-500 font-bold" // Cambia de color según el estado
-          )}
-        >
-          {statusText}
-        </span>
-      );
-    },
+    accessorKey: "date",
+    header: "Fecha",
   },
-  // {
-  //   id: "actions",
-  //   cell: ({ row }) => <CellAction data={row.original} />,
-  // },
+  {
+    accessorKey: "service",
+    header: "Servicio",
+  }
 ];

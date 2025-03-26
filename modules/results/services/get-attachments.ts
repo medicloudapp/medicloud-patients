@@ -14,7 +14,7 @@ export const getAttachmentsByPatientId = async (patientId: string) => {
       "Authorization"
     ] = `Bearer ${session.user.token}`;
     const { data } = await axiosInstance.get(
-      `/patient-annexes/patient/${patientId}`
+      `/patient-annexes/only-results/medicloud-patients/${patientId}`
     );
     return data as Attach[];
   } catch (error) {
