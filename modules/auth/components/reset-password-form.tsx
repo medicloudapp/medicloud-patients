@@ -42,7 +42,10 @@ export const ResetPasswordForm = () => {
     setSuccess("");
     startTransition(() => {
       resetPassword(values).then((data) => {
-        setError(data.error);
+        if (data.error) {
+          setError(data.error);
+        }
+
         if (data.success) {
           setSuccess(data.success);
           console.log({ data });
