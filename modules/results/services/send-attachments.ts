@@ -3,9 +3,7 @@ import { FileProcessRequest } from "@/modules/results/interfaces/Attach";
 
 export const processFile = async (data: FileProcessRequest, token: string) => {
   try {
-    axiosInstance.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${token}`;
+    axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
     const response = await axiosInstance.post("/MailSender/SenderEmail", data);
     return response.data;
@@ -14,4 +12,3 @@ export const processFile = async (data: FileProcessRequest, token: string) => {
     throw error;
   }
 };
-
