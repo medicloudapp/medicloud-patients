@@ -21,8 +21,8 @@ export const ResultsTable: React.FC<ResultsTableProps> = ({
     return data.map(item => ({
       id: item.id,
       name: item.name,
-      date: item.diary.dates[0].split("T")[0] || new Date().toISOString(),
-      service: `${item.service.code} - ${item.service.description}` || 'N/A',
+      date: item.diary?.dates?.[0]?.split("T")[0] || new Date().toISOString().split("T")[0],
+      service: item.service ? `${item.service.code} - ${item.service.description}` : 'N/A',
     }));
   };
 
