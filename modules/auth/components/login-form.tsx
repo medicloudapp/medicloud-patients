@@ -39,27 +39,21 @@ export const LoginForm = () => {
   const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     setError("");
     setSuccess("");
-    
-    try {
-      startTransition(async () => {
-        const response = await login(values);
-
-        if (response.error) {
-          setError(response.error);
-          return;
-        }
-
-        if (response.success) {
-          setSuccess(response.success);
-          form.reset();
-          router.push("/results");
-          return;
-        }
-      });
-    } catch (err) {
-      setError("Error inesperado durante el inicio de sesión");
-      console.error("Submit error:", err);
-    }
+  
+    startTransition(async () => {
+      const { error, success } = await login(values);
+  
+      if (error) {
+        setError(error);
+        return;
+      }
+  
+      if (success) {
+        setSuccess(success);
+        form.reset();
+        router.push("/results");
+      }
+    });
   };
 
   return (
