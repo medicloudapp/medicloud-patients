@@ -4,6 +4,7 @@ import * as z from "zod";
 import { signIn } from "@/auth";
 import { AuthError } from "next-auth";
 
+// login.ts (modifica la función login)
 export const login = async (
   values: z.infer<typeof loginSchema>
 ): Promise<{ error?: string; success?: string }> => {
@@ -15,39 +16,39 @@ export const login = async (
     }
 
     const { document, password } = validatedFields.data;
-    
+
     const response = await signIn("credentials", {
       document,
       password,
       redirect: false,
     });
 
+    // Aquí hay que manejar la respuesta de signIn correctamente
     if (response?.error) {
-      // Personaliza los mensajes de error según el código de error
-      const errorMessages: Record<string, string> = {
-        "CredentialsSignin": "Credenciales inválidas",
-        "Invalid document": "Documento incorrecto",
-        "Invalid password": "Contraseña incorrecta",
-      };
-      
-      return { 
-        error: errorMessages[response.error] || response.error 
-      };
+      // Si hay error, lo devolvemos directamente
+      console.log({ response });
+      return { error: response.message };
     }
 
     return { success: "Inicio de sesión exitoso" };
-  } catch (error) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
     console.error("Login error:", error);
-    
+
     if (error instanceof AuthError) {
       switch (error.type) {
         case "CredentialsSignin":
-          return { error: "Credenciales inválidas" };
+          return {
+            error:
+              "El documento o la contraseña son incorrectos. Por favor inténtalo de nuevo.",
+          };
         default:
           return { error: "Error en la autenticación" };
       }
     }
-    
-    return { error: "Error en el servidor. Por favor, intente más tarde" };
+    return {
+      error:
+        error.message || "Error en el servidor. Por favor, intente más tarde",
+    };
   }
 };

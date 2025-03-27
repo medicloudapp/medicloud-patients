@@ -14,19 +14,18 @@ export default {
       authorize: async (credentials) => {
         const validatedFields = loginSchema.safeParse(credentials);
         if (!validatedFields.success) {
-          // Devuelve null y el mensaje de error
           return null;
         }
-
+      
         const { document, password } = validatedFields.data;
-
+      
         const response = await UserLogin(document, password);
-
+      
         if (!response.success) {
-          // Lanza el error con el mensaje de la API
-          throw new Error(response.message);
+          // En lugar de throw new Error, devuelve null y el mensaje
+          return null;
         }
-
+      
         return response.data || null;
       },
     }),
