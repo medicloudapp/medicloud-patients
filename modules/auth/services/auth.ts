@@ -10,20 +10,20 @@ export const UserLogin = async (document: string, password: string) => {
     return {
       success: true,
       data: response.data,
-      message: "Login exitoso"
+      message: "Login exitoso",
     };
   } catch (error) {
     if (axios.isAxiosError(error)) {
       return {
         success: false,
         message: error.response?.data?.message || "Error en la autenticación",
-        status: error.response?.status
+        status: error.response?.status,
       };
     }
     return {
       success: false,
       message: "Error inesperado durante el login",
-      status: 500
+      status: 500,
     };
   }
 };
@@ -41,7 +41,7 @@ export const signUp = async (
     };
 
     // Envía el objeto userData al endpoint
-    const response = await api.put("/patients/create-password", userData);
+    const response = await api.put("/auth/RegisterPatientAsync", userData);
     return response.data;
   } catch (error) {
     console.error("Error en register:", error);
@@ -52,7 +52,7 @@ export const signUp = async (
 export const checkEmail = async (code: string, patientId: string) => {
   try {
     const response = await api.get(
-      `/patients/VerifyCode?IdPatient=${patientId}&Code=${code}`
+      `/auth/VerifyCodePatient?IdPatient=${patientId}&Code=${code}`
     );
     return response.data;
   } catch (error) {
