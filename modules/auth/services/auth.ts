@@ -14,16 +14,21 @@ export const UserLogin = async (document: string, password: string) => {
     };
   } catch (error) {
     if (axios.isAxiosError(error)) {
+      // Extrae el mensaje de error de la respuesta de la API
+      const errorMessage =
+        error.response?.data?.message || "Error en la autenticación";
       return {
         success: false,
-        message: error.response?.data?.message || "Error en la autenticación",
+        message: errorMessage,
         status: error.response?.status,
+        errorCode: error.response?.data?.errorCode, // Agrega esto para más detalle
       };
     }
     return {
       success: false,
       message: "Error inesperado durante el login",
       status: 500,
+      errorCode: "INTERNAL_ERROR",
     };
   }
 };

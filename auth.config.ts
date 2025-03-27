@@ -14,7 +14,8 @@ export default {
       authorize: async (credentials) => {
         const validatedFields = loginSchema.safeParse(credentials);
         if (!validatedFields.success) {
-          throw new Error("Credenciales inválidas");
+          // Devuelve null y el mensaje de error
+          return null;
         }
 
         const { document, password } = validatedFields.data;
@@ -22,14 +23,11 @@ export default {
         const response = await UserLogin(document, password);
 
         if (!response.success) {
+          // Lanza el error con el mensaje de la API
           throw new Error(response.message);
         }
 
-        if (response.data) {
-          return response.data;
-        }
-
-        return null;
+        return response.data || null;
       },
     }),
   ],
