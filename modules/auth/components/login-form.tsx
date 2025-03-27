@@ -21,6 +21,7 @@ import { FormSuccess } from "@/components/form-success";
 import { login } from "@/modules/auth/actions/login";
 import { useState, useTransition } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export const LoginForm = () => {
   const [isPending, startTransition] = useTransition();
@@ -33,26 +34,32 @@ export const LoginForm = () => {
       password: "",
     },
   });
+  const router = useRouter();
 
-  const onSubmit = (values: z.infer<typeof loginSchema>) => {
+  const onSubmit = async (values: z.infer<typeof loginSchema>) => {
     setError("");
     setSuccess("");
-    startTransition(() => {
-      login(values).then((data) => {
-        if (data.error) {
-          setError(data.error);
+    
+    try {
+      startTransition(async () => {
+        const response = await login(values);
+
+        if (response.error) {
+          setError(response.error);
           return;
         }
 
-        if (data.success) {
-          setSuccess(data.success);
+        if (response.success) {
+          setSuccess(response.success);
           form.reset();
+          router.push("/results");
           return;
         }
-
-        setError("Error inesperado durante el inicio de sesión");
       });
-    });
+    } catch (err) {
+      setError("Error inesperado durante el inicio de sesión");
+      console.error("Submit error:", err);
+    }
   };
 
   return (

@@ -23,10 +23,10 @@ import { resetPassword } from "@/modules/auth/actions/reset-password";
 import { useRouter } from "next/navigation";
 
 export const ResetPasswordForm = () => {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
-  const router = useRouter();
 
   const form = useForm<z.infer<typeof resetPasswordSchema>>({
     resolver: zodResolver(resetPasswordSchema),
@@ -37,28 +37,34 @@ export const ResetPasswordForm = () => {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof resetPasswordSchema>) => {
+  const onSubmit = async (values: z.infer<typeof resetPasswordSchema>) => {
     setError("");
     setSuccess("");
-    startTransition(() => {
-      resetPassword(values).then((data) => {
-        if (data.error) {
-          setError(data.error);
-        }
 
-        if (data.success) {
-          setSuccess(data.success);
-          console.log({ data });
-
-          // Verificar si la respuesta tiene un ID y redirigir
-          if (data.id) {
-            router.push(`/auth/register/${data.id}`);
-          } else {
-            setError("No se pudo obtener el ID del paciente");
+    try {
+      startTransition(() => {
+        resetPassword(values).then((data) => {
+          if (data.error) {
+            setError(data.error);
+            return;
           }
-        }
+
+          if (data.success) {
+            setSuccess(data.success);
+            form.reset();
+
+            if (data.id) {
+              router.push(`/auth/register/${data.id}`);
+            } else {
+              setError("No se pudo obtener el ID del paciente");
+            }
+          }
+        });
       });
-    });
+    } catch (err) {
+      setError("Error al procesar la solicitud. Por favor, intente nuevamente.");
+      console.error("Reset password error:", err);
+    }
   };
 
   return (
@@ -113,9 +119,7 @@ export const ResetPasswordForm = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-semibold">
-                    Nueva Contraseña:
-                  </FormLabel>
+                  <FormLabel className="font-semibold">Nueva Contraseña</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
@@ -132,7 +136,7 @@ export const ResetPasswordForm = () => {
           <FormError message={error} />
           <FormSuccess message={success} />
           <Button type="submit" className="w-full" disabled={isPending}>
-            Cambiar Contraseña
+            Restablecer Contraseña
           </Button>
         </form>
       </Form>

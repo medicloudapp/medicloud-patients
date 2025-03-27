@@ -2,65 +2,49 @@
 import { loginSchema } from "@/schemas/auth";
 import * as z from "zod";
 import { signIn } from "@/auth";
-import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
-import { AuthError } from "next-auth";
 
-export const login = async (values: z.infer<typeof loginSchema>) => {
+interface LoginResponse {
+  error?: string;
+  success?: string;
+  status: number;
+}
+
+export const login = async (values: z.infer<typeof loginSchema>): Promise<LoginResponse> => {
   try {
     const validatedFields = loginSchema.safeParse(values);
 
     if (!validatedFields.success) {
-      return { 
+      return {
         error: "Los datos ingresados no son válidos",
-        status: 400 
+        status: 400,
       };
     }
 
     const { document, password } = validatedFields.data;
 
-    if (!document || !password) {
+    const response = await signIn("credentials", {
+      document,
+      password,
+      redirect: false, // Prevent automatic redirect
+    });
+
+    if (!response?.ok) {
       return {
-        error: "Documento y contraseña son requeridos",
-        status: 400
+        error: "Credenciales inválidas",
+        status: 401,
       };
     }
 
-    await signIn("credentials", {
-      document,
-      password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
-    });
-
-    return { 
+    return {
       success: "Inicio de sesión exitoso",
-      status: 200 
+      status: 200,
     };
 
   } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          return { 
-            error: error.message || "Credenciales inválidas. Por favor, verifique sus datos",
-            status: 401 
-          };
-        case "CallbackRouteError":
-          return {
-            error: "Error en la redirección. Por favor, intente nuevamente",
-            status: 500
-          };
-        default:
-          return { 
-            error: error.message || "Ha ocurrido un error. Por favor, intente nuevamente",
-            status: 500 
-          };
-      }
-    }
-
     console.error("Login error:", error);
-    return { 
-      error: error instanceof Error ? error.message : "Error en el servidor. Por favor, intente más tarde",
-      status: 500 
+    return {
+      error: "Error en el servidor. Por favor, intente más tarde",
+      status: 500,
     };
   }
 };
