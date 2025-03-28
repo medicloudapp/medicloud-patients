@@ -5,31 +5,30 @@ import { Heading } from "@/components/ui/heading";
 import { getAttachmentsByPatientId } from "@/modules/results/services/get-attachments";
 import { ResultsTable } from "@/modules/results/components/results-table";
 import { Attach } from "@/modules/results/interfaces/Attach";
-import { auth } from "@/auth";
 
-export const ResultsForm = () => {
-  const [initialData, setInitialData] = useState<Attach[]>([]);
-  const [session, setSession] = useState<{
+interface ResultsFormProps {
+  session: {
     user?: {
       id: string;
       name: string;
       token: string;
     };
-  } | null>(null);
+  } | null;
+}
+
+export const ResultsForm = ({ session }: ResultsFormProps) => {
+  const [initialData, setInitialData] = useState<Attach[]>([]);
 
   useEffect(() => {
-    const fetchSession = async () => {
-      const authSession = await auth();
-      setSession(authSession);
-
-      if (authSession?.user?.id) {
-        const data = await getAttachmentsByPatientId(authSession.user.id);
+    const fetchData = async () => {
+      if (session?.user?.id) {
+        const data = await getAttachmentsByPatientId(session.user.id);
         setInitialData(data);
       }
     };
 
-    fetchSession();
-  }, []);
+    fetchData();
+  }, [session]);
 
   if (!session?.user) return null;
 
