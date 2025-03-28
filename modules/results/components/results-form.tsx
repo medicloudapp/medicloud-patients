@@ -4,23 +4,32 @@ import { useEffect, useState } from "react";
 import { Heading } from "@/components/ui/heading";
 import { getAttachmentsByPatientId } from "@/modules/results/services/get-attachments";
 import { ResultsTable } from "@/modules/results/components/results-table";
-import { useSession } from "next-auth/react";
 import { Attach } from "@/modules/results/interfaces/Attach";
+import { auth } from "@/auth";
 
 export const ResultsForm = () => {
-  const { data: session } = useSession();
   const [initialData, setInitialData] = useState<Attach[]>([]);
+  const [session, setSession] = useState<{
+    user?: {
+      id: string;
+      name: string;
+      token: string;
+    };
+  } | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (session?.user?.id) {
-        const data = await getAttachmentsByPatientId(session.user.id);
+    const fetchSession = async () => {
+      const authSession = await auth();
+      setSession(authSession);
+
+      if (authSession?.user?.id) {
+        const data = await getAttachmentsByPatientId(authSession.user.id);
         setInitialData(data);
       }
     };
 
-    fetchData();
-  }, [session]);
+    fetchSession();
+  }, []);
 
   if (!session?.user) return null;
 
