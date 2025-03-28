@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { auth } from "@/auth";
 import { Heading } from "@/components/ui/heading";
 import { getAttachmentsByPatientId } from "@/modules/results/services/get-attachments";
 import { ResultsTable } from "@/modules/results/components/results-table";
