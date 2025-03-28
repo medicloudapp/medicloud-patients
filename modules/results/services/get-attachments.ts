@@ -1,18 +1,13 @@
-import { auth } from "@/auth";
 import axiosInstance from "@/lib/client";
 import type { Attach } from "@/modules/results/interfaces/Attach";
 
-export const getAttachmentsByPatientId = async (patientId: string) => {
-  const session = await auth(); // Obtén la sesión en el servidor
-
-  if (!session || !session.user || !session.user.token) {
-    throw new Error("No user session or token found");
+export const getAttachmentsByPatientId = async (patientId: string, token: string) => {
+  if (!token) {
+    throw new Error("No token provided");
   }
 
   try {
-    axiosInstance.defaults.headers.common[
-      "Authorization"
-    ] = `Bearer ${session.user.token}`;
+    axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     const { data } = await axiosInstance.get(
       `/patient-annexes/only-results/medicloud-patients/${patientId}`
     );

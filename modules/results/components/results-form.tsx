@@ -21,8 +21,8 @@ export const ResultsForm = ({ session }: ResultsFormProps) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (session?.user?.id) {
-        const data = await getAttachmentsByPatientId(session.user.id);
+      if (session?.user?.id && session?.user?.token) {
+        const data = await getAttachmentsByPatientId(session.user.id, session.user.token);
         setInitialData(data);
       }
     };
